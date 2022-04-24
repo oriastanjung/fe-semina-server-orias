@@ -13,8 +13,10 @@ function TableWithAction({
   tbody,
   editUrl,
   deleteAction,
+  toggleStatusBank,
   pages,
   customAction,
+  detailPartisipan,
   status,
 }) {
   return (
@@ -28,6 +30,8 @@ function TableWithAction({
           editUrl={editUrl}
           deleteAction={deleteAction}
           actionNotDisplay={actionNotDisplay}
+          toggleStatusBank = {toggleStatusBank}
+          detailPartisipan = {detailPartisipan}
           customAction={customAction}
         />
       </Table>

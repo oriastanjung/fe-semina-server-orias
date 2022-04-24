@@ -1,21 +1,23 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Container } from 'react-bootstrap';
 import BreadCrumb from '../../components/BreadCrumb';
 import Alert from '../../components/Alert';
 import Form from './form';
-import { postData } from '../../utils/fetchData';
-import { useNavigate } from 'react-router-dom';
+import { getData, putData } from '../../utils/fetchData';
+import { useNavigate, useParams } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { setNotif } from '../../redux/notif/actions';
+import { config } from '../../configs';
 
-function SpeakersCreate() {
+function PaymentsEdit() {
+  const { paymentsId } = useParams();
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [form, setForm] = useState({
-    name: '',
-    role: '',
+    type: '',
+    imageUrl: '',
     file: '',
-    avatar: '',
+    status: '',
   });
 
   const [alert, setAlert] = useState({
@@ -26,8 +28,24 @@ function SpeakersCreate() {
 
   const [isLoading, setIsLoading] = useState(false);
 
+  const fetchOnePayments = async () => {
+    const res = await getData(`api/v1/payments/${paymentsId}`);
+
+    setForm({
+      ...form,
+      type: res.data.data.type,
+      status: res.data.data.status,
+      imageUrl: `${config.api_image}/${res.data.data.imageUrl}`,
+    });
+  };
+
+  useEffect(() => {
+    fetchOnePayments();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   const handleChange = (e) => {
-    if (e.target.name === 'avatar') {
+    if (e.target.name === 'imageUrl') {
       if (
         e?.target?.files[0]?.type === 'image/jpg' ||
         e?.target?.files[0]?.type === 'image/png' ||
@@ -77,20 +95,16 @@ function SpeakersCreate() {
     try {
       let formData = new FormData();
 
-      formData.append('avatar', form.file);
-      formData.append('name', form.name);
-      formData.append('role', form.role);
+      formData.append('imageUrl', form.file);
+      formData.append('type', form.type);
+      formData.append('status', form.status);
 
-      const res = await postData('api/v1/speakers', formData, true);
+      const res = await putData(`api/v1/payments/${paymentsId}`, formData, true);
 
       dispatch(
-        setNotif(
-          true,
-          'success',
-          `berhasil tambah speaker ${res.data.data.name}`
-        )
+        setNotif(true, 'success', `berhasil ubah payments ${res.data.data.type}`)
       );
-      navigate('/speakers');
+      navigate('/payments');
       setIsLoading(false);
     } catch (err) {
       setIsLoading(false);
@@ -106,9 +120,9 @@ function SpeakersCreate() {
   return (
     <Container>
       <BreadCrumb
-        textSecound={'Speakers'}
-        urlSecound={'/speakers'}
-        textThird='Create'
+        textSecound={'Payments'}
+        urlSecound={'/payments'}
+        textThird='Edit'
       />
       {alert.status && <Alert type={alert.type} message={alert.message} />}
       <Form
@@ -121,4 +135,4 @@ function SpeakersCreate() {
   );
 }
 
-export default SpeakersCreate;
+export default PaymentsEdit;

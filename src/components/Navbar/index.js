@@ -22,9 +22,12 @@ function ComponentNavbar() {
           <NavLink action={() => navigate('/categories')}>Categories</NavLink>
           <NavLink action={() => navigate('/speakers')}>Speakers</NavLink>
           <NavLink action={() => navigate('/events')}>Events</NavLink>
-          <NavLink action={() => navigate('/participant')}>Participant</NavLink>
+          <NavLink action={() => navigate('/participants')}>Participant</NavLink>
           <NavLink action={() => navigate('/transactions')}>
             Transactions
+          </NavLink>
+          <NavLink action={() => navigate('/payments')}>
+            Payments
           </NavLink>
         </Nav>
         <Nav>
